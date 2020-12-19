@@ -1,47 +1,110 @@
-const express = require('express');
-const Student = require('./models/Student');
+// const express = require('express');
+// const Student = require('./models/Student');
 
+
+// const app = express();
+
+// // middleware 
+// app.use(express.json());
+
+// // Routes
+
+// // Get all the students
+// app.get('/students', async (req, res) => {
+//     try {
+//         res.send(await Student.find({ isDeleted: false }));
+//     } catch (err) {
+//         res.sendStatus(404);
+//     }
+// })
+
+// // Add student to database
+// app.post("/students", async (req, res) => {
+//     const newStudent = req.body;
+//     try {
+//         const newStudentDoc = new Student(newStudent);
+//         await newStudentDoc.save();
+//         res.send(newStudentDoc);
+//     }
+//     catch (err) {
+//         res.sendStatus(404);
+//     }
+
+// });
+
+// // Get specific student
+// app.get('/students/:id', async (req, res) => {
+//     const id = req.query.id;
+//     try {
+//         res.send(await Student.find({ id, isDeleted: false }));
+//     } catch (err) {
+//         res.sendStatus(404);
+//     }
+
+// })
+
+// // delete specific student
+// app.delete("/students/:id", async (req, res) => {
+//     const id = req.params.id;
+//     const type = req.query.type;
+
+//     if (type === "soft") {
+//         try {
+//             const studentToDel = await Student.findById(id);
+//             studentToDel.isDeleted = true;
+//             await studentToDel.save();
+//             res.sendStatus(200);
+//         } catch (err) {
+//             res.sendStatus(404);
+//         }
+//     } else {
+//         try {
+//             const studentToDel = await Student.findById(id);
+//             await Student.deleteOne({ _id: id });
+//             res.sendStatus(200);
+//         } catch (err) {
+//             res.sendStatus(404);
+//         }
+//     }
+// });
+
+
+// module.exports = app;
+
+const express = require("express");
+const studentModel = require("./models/Student");
+const Student = require("./models/Student");
 
 const app = express();
 
-// middleware 
+// middleware
 app.use(express.json());
 
 // Routes
 
+const isNullOrUndefined = (val) => val === null || val === undefined;
 // Get all the students
-app.get('/students', async (req, res) => {
-    try {
-        res.send(await Student.find({ isDeleted: false }));
-    } catch (err) {
-        res.sendStatus(404);
-    }
-})
+app.get("/students", async (req, res) => {
+    res.send(await studentModel.find({ isDeleted: false }));
+});
 
 // Add student to database
 app.post("/students", async (req, res) => {
-    const newStudent = req.body;
-    try {
-        const newStudentDoc = new Student(newStudent);
-        await newStudentDoc.save();
-        res.send(newStudentDoc);
-    }
-    catch (err) {
-        res.sendStatus(404);
-    }
-
+    const newStudentDoc = new studentModel(newStudent);
+    await newStudentDoc.save();
+    res.send(newStudentDoc);
 });
 
 // Get specific student
-app.get('/students/:id', async (req, res) => {
-    const id = req.query.id;
+app.get("/students/:id", async (req, res) => {
+    const id = req.params.id;
+
     try {
-        res.send(await Student.find({ id, isDeleted: false }));
+        res.send(await studentModel.findById(id));
     } catch (err) {
         res.sendStatus(404);
     }
-
-})
+});
 
 // delete specific student
 app.delete("/students/:id", async (req, res) => {
@@ -50,7 +113,7 @@ app.delete("/students/:id", async (req, res) => {
 
     if (type === "soft") {
         try {
-            const studentToDel = await Student.findById(id);
+            const studentToDel = await studentModel.findById(id);
             studentToDel.isDeleted = true;
             await studentToDel.save();
             res.sendStatus(200);
@@ -59,14 +122,13 @@ app.delete("/students/:id", async (req, res) => {
         }
     } else {
         try {
-            const studentToDel = await Student.findById(id);
-            await Student.deleteOne({ _id: id });
+            const studentToDel = await studentModel.findById(id);
+            await studentModel.deleteOne({ _id: id });
             res.sendStatus(200);
         } catch (err) {
             res.sendStatus(404);
         }
     }
 });
-
 
 module.exports = app;
