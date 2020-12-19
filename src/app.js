@@ -11,23 +11,62 @@ app.use(express.json());
 
 // Get all the students
 app.get('/students', async (req, res) => {
-    // write your codes here
+    try {
+        res.send(await Student.find({ isDeleted: false }));
+    } catch (err) {
+        res.sendStatus(404);
+    }
 })
 
 // Add student to database
-app.post('/students', async (req, res) =>{
-    // write your codes here
-})
+app.post("/students", async (req, res) => {
+    const newStudent = req.body;
+    try {
+        const newStudentDoc = new Student(newStudent);
+        await newStudentDoc.save();
+        res.send(newStudentDoc);
+    }
+    catch (err) {
+        res.sendStatus(404);
+    }
+
+});
 
 // Get specific student
-app.get('/students/:id', async (req, res) =>{
-    // write your codes here
+app.get('/students/:id', async (req, res) => {
+    const id = req.query.id;
+    try {
+        res.send(await Student.find({ id, isDeleted: false }));
+    } catch (err) {
+        res.sendStatus(404);
+    }
+
 })
 
 // delete specific student
-app.delete('/students/:id', async (req, res) =>{
-    // write your codes here
-}) 
+app.delete("/students/:id", async (req, res) => {
+    const id = req.params.id;
+    const type = req.query.type;
+
+    if (type === "soft") {
+        try {
+            const studentToDel = await Student.findById(id);
+            studentToDel.isDeleted = true;
+            await studentToDel.save();
+            res.sendStatus(200);
+        } catch (err) {
+            res.sendStatus(404);
+        }
+    } else {
+        try {
+            const studentToDel = await Student.findById(id);
+            await Student.deleteOne({ _id: id });
+            res.sendStatus(200);
+        } catch (err) {
+            res.sendStatus(404);
+        }
+    }
+});
 
 
 module.exports = app;
