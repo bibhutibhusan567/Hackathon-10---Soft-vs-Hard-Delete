@@ -33,9 +33,11 @@ app.post("/students", async (req, res) => {
 
 // Get specific student
 app.get('/students/:id', async (req, res) => {
-    const id = req.query.id;
+    const id = req.params.id;
+    console.log(id);
     try {
-        res.send(await Student.find({ _id: id }));
+        const student = await Student.findById(id);
+        res.send(student);
     } catch (err) {
         res.sendStatus(404);
     }
