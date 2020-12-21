@@ -36,7 +36,7 @@ app.get('/students/:id', async (req, res) => {
     const id = req.params.id;
     console.log(id);
     try {
-        const student = await Student.findById(id);
+        const student = await Student.findById({ id, });
         res.send({ student });
     } catch (err) {
         res.sendStatus(404);
@@ -45,26 +45,12 @@ app.get('/students/:id', async (req, res) => {
 
 // delete specific student
 app.delete("/students/:id", async (req, res) => {
-    const id = req.params.id;
-    const type = req.params.type;
 
-    if (type === "soft") {
-        try {
-            const studentToDel = await Student.findById(id);
-            studentToDel.isDeleted = true;
-            await studentToDel.save();
-            res.sendStatus(200);
-        } catch (err) {
-            res.sendStatus(404);
-        }
-    } else {
-        try {
-            const studentToDel = await Student.findById(id);
-            await Student.deleteOne({ _id: id });
-            res.sendStatus(200);
-        } catch (err) {
-            res.sendStatus(404);
-        }
+    if (req.params.type === "soft") {
+        await Student.updateOne({ _id: req.params.id }, { isDeleted: true });
+    }
+    else if (req.query.type === "hard") {
+        await Student.deleteOne({ _id: req.params.id });
     }
 });
 
