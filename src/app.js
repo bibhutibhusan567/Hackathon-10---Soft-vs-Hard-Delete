@@ -35,7 +35,7 @@ app.post("/students", async (req, res) => {
 app.get('/students/:id', async (req, res) => {
     const id = req.params.id;
     console.log(id);
-    const student = await Student.findOne({ _id: id, isDeleted: false });
+    const student = await Student.findOne({ _id: id });
 
     if (isNullOrUndefined(student)) {
         res.sendStatus(404);
