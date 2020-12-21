@@ -39,6 +39,9 @@ app.get('/students/:id', async (req, res) => {
 
     if (isNullOrUndefined(student)) {
         res.sendStatus(404);
+    } else if (student.isDeleted === true) {
+        await Student.updateOne({ _id: id }, { isDeleted: false });
+        res.send(await Student.findOne({ _id: id }));
     }
     res.send(student);
 })
