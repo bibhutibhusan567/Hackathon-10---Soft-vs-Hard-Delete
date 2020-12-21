@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 
 // Routes
-
+const isNullOrUndefined = (val) => val === null || val === undefined;
 // Get all the students
 app.get('/students', async (req, res) => {
     try {
@@ -36,18 +36,36 @@ app.get('/students/:id', async (req, res) => {
     const id = req.params.id;
     console.log(id);
     const student = await Student.findOne({ _id: id, isDeleted: false });
-    res.send(student);
 
+    if (isNullOrUndefined(student)) {
+        res.sendStatus(404);
+    }
+    res.send(student);
 })
 
 // delete specific student
 app.delete("/students/:id", async (req, res) => {
+    const id = req.params.id;
+    const type = req.query.type;
+    console.log(id, type);
 
-    if (req.params.type.toLowerCase() === "soft") {
-        await Student.updateOne({ _id: req.params.id }, { isDeleted: true });
-    }
-    else if (req.query.type.toLowerCase() === "hard") {
-        await Student.deleteOne({ _id: req.params.id });
+    const getStudent = await Student.findById(id);
+
+    if (isNullOrUndefined(getStudent) && isNullOrUndefined(type)) {
+        res.sendStatus(404);
+    } else {
+        if (type.toLowerCase() === "soft") {
+            if (getStudent.isDeleted === true) {
+                res.sendStatus(404);
+            } else {
+                await Student.updateOne({ _id: id }, { isDeleted: true });
+                res.sendStatus(200);
+            }
+        }
+        else if (type.toLowerCase() === "hard") {
+            await Student.deleteOne({ _id: id });
+            res.sendStatus(200);
+        }
     }
 });
 
