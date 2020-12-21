@@ -37,17 +37,16 @@ app.get('/students/:id', async (req, res) => {
     console.log(id);
     try {
         const student = await Student.findById(id);
-        res.send(student);
+        res.send({ student });
     } catch (err) {
         res.sendStatus(404);
     }
-
 })
 
 // delete specific student
 app.delete("/students/:id", async (req, res) => {
     const id = req.params.id;
-    const type = req.query.type;
+    const type = req.params.type;
 
     if (type === "soft") {
         try {
