@@ -35,46 +35,43 @@ app.post("/students", async (req, res) => {
 app.get('/students/:id', async (req, res) => {
     const id = req.params.id;
     console.log(id);
-    const student = await Student.findOne({ _id: id });
+    const student = await Student.findOne({ _id: id, isDeleted: false });
 
-    // if (isNullOrUndefined(student)) {
-    //     res.sendStatus(404);
-    // }// else if (student.isDeleted === true) {
-    //     await Student.updateOne({ _id: id }, { isDeleted: false });
-    //     res.send(await Student.findOne({ _id: id }));
-    // }
+    if (isNullOrUndefined(student)) {
+        res.sendStatus(404);
+    }
     res.send(student);
 })
 
 // delete specific student
-// app.delete("/students/:id", async (req, res) => {
-//     const id = req.params.id;
-//     const type = req.query.type;
-//     console.log(id, type);
+app.delete("/students/:id", async (req, res) => {
+    const id = req.params.id;
+    const type = req.query.type;
+    console.log(id, type);
 
-//     const getStudent = await Student.findById(id);
+    const getStudent = await Student.findById(id);
 
-//     if (isNullOrUndefined(getStudent) && isNullOrUndefined(type)) {
-//         res.sendStatus(404);
-//     } else {
-//         if (type.toLowerCase() === "soft") {
-//             if (getStudent.isDeleted === true) {
-//                 res.sendStatus(404);
-//             } else {
-//                 await Student.updateOne({ _id: id }, { isDeleted: true });
-//                 res.sendStatus(200);
-//             }
-//         }
-//         else if (type.toLowerCase() === "hard") {
-//             if (getStudent.isDeleted === true) {
-//                 res.sendStatus(404);
-//             } else {
-//                 await Student.deleteOne({ _id: id });
-//                 res.sendStatus(200);
-//             }
-//         }
-//     }
-// });
+    if (isNullOrUndefined(getStudent) && isNullOrUndefined(type)) {
+        res.sendStatus(404);
+    } else {
+        if (type.toLowerCase() === "soft") {
+            if (getStudent.isDeleted === true) {
+                res.sendStatus(404);
+            } else {
+                await Student.updateOne({ _id: id }, { isDeleted: true });
+                res.sendStatus(200);
+            }
+        }
+        else if (type.toLowerCase() === "hard") {
+            if (getStudent.isDeleted === true) {
+                res.sendStatus(404);
+            } else {
+                await Student.deleteOne({ _id: id });
+                res.sendStatus(200);
+            }
+        }
+    }
+});
 
 
 module.exports = app;
