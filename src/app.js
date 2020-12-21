@@ -34,12 +34,12 @@ app.post("/students", async (req, res) => {
 // Get specific student
 app.get('/students/:id', async (req, res) => {
     const id = req.params.id;
-    console.log(id);
-    const student = await Student.findOne({ _id: id, isDeleted: false });
+    //console.log(id);
+    const student = await Student.findOne({ _id: id });
 
-    if (isNullOrUndefined(student)) {
-        res.sendStatus(404);
-    }
+    // if (isNullOrUndefined(student)) {
+    //     res.sendStatus(404);
+    // }
     res.send(student);
 })
 
