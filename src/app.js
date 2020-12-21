@@ -1,7 +1,6 @@
 const express = require('express');
 const Student = require('./models/Student');
 
-
 const app = express();
 
 // middleware 
@@ -12,7 +11,7 @@ app.use(express.json());
 // Get all the students
 app.get('/students', async (req, res) => {
     try {
-        res.send(await Student.find({ isDeleted: false }));
+        res.send(await Student.find());
     } catch (err) {
         res.sendStatus(404);
     }
@@ -36,7 +35,7 @@ app.post("/students", async (req, res) => {
 app.get('/students/:id', async (req, res) => {
     const id = req.query.id;
     try {
-        res.send(await Student.find({ id, isDeleted: false }));
+        res.send(await Student.find({ _id: id }));
     } catch (err) {
         res.sendStatus(404);
     }
