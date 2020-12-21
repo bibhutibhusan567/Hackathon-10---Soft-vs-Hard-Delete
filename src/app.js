@@ -63,8 +63,12 @@ app.delete("/students/:id", async (req, res) => {
             }
         }
         else if (type.toLowerCase() === "hard") {
-            await Student.deleteOne({ _id: id });
-            res.sendStatus(200);
+            if (getStudent.isDeleted === true) {
+                res.sendStatus(404);
+            } else {
+                await Student.deleteOne({ _id: id });
+                res.sendStatus(200);
+            }
         }
     }
 });
