@@ -36,8 +36,8 @@ app.get('/students/:id', async (req, res) => {
     const id = req.params.id;
     console.log(id);
     try {
-        const student = await Student.find({ _id: id, isDeleted: false });
-        res.send({ student });
+        const student = await Student.findOne({ _id: id, isDeleted: false });
+        res.send(student);
     } catch (err) {
         res.sendStatus(404);
     }
