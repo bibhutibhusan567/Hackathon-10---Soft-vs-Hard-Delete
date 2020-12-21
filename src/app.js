@@ -44,33 +44,33 @@ app.get('/students/:id', async (req, res) => {
 })
 
 // delete specific student
-// app.delete("/students/:id", async (req, res) => {
-//     const id = req.params.id;
-//     const type = req.query.type;
+app.delete("/students/:id", async (req, res) => {
+    const id = req.params.id;
+    const type = req.query.type;
 
-//     if (type === "soft") {
-//         try {
-//             const studentToDel = await Student.findById(id);
-//             studentToDel.isDeleted = true;
-//             await studentToDel.save();
-//             res.status(200);
-//         } catch (err) {
-//             res.sendStatus(404);
-//         }
-//     } else if (type === "hard") {
-//         try {
-//             const studentToDel = await Student.findById(id);
-//             if (studentToDel.isDeleted === true) {
-//                 res.sendStatus(404);
-//             } else {
-//                 await Student.deleteOne({ _id: id });
-//                 res.sendStatus(200);
-//             }
-//         } catch (err) {
-//             res.sendStatus(404);
-//         }
-//     }
-// });
+    if (type === "soft") {
+        try {
+            const studentToDel = await Student.findById(id);
+            if (studentToDel.isDeleted === true) {
+                res.sendStatus(404);
+            } else {
+                studentToDel.isDeleted = true;
+                await studentToDel.save();
+                res.status(200);
+            }
+        } catch (err) {
+            res.sendStatus(404);
+        }
+    } else if (type === "hard") {
+        try {
+            const studentToDel = await Student.findById(id);
+            await Student.deleteOne({ _id: id });
+            res.sendStatus(200);
+        } catch (err) {
+            res.sendStatus(404);
+        }
+    }
+});
 
 
 module.exports = app;
