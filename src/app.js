@@ -46,10 +46,10 @@ app.get('/students/:id', async (req, res) => {
 // delete specific student
 app.delete("/students/:id", async (req, res) => {
 
-    if (req.params.type === "soft") {
+    if (req.params.type.toLowerCase() === "soft") {
         await Student.updateOne({ _id: req.params.id }, { isDeleted: true });
     }
-    else if (req.query.type === "hard") {
+    else if (req.query.type.toLowerCase() === "hard") {
         await Student.deleteOne({ _id: req.params.id });
     }
 });
